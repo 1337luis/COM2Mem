@@ -3,7 +3,7 @@
  * Programa de lanzamiento de instrucciones por puerto Serie
  * 
  * @author Luis Santos  <luis1337@outlook.es>
- * @version 0.0.3a
+ * @version 0.0.6a
  */
 
 using System;
@@ -99,11 +99,14 @@ namespace COM2Mem
      */
     class MemPort
     {
+        private const int TOTAL_SIZE = 64;         // Tamaño del comando
+        private const string CMD_PREFIX = "CMD#";  // Prefijo de comando
+
         public SerialPort port;     // Puerto real
+        private string toSendCmd;   // String del comando
         private int toOpen = 0;     // Comando de apertura
         private int toClose = 0;    // Comando de cierre
         private int toSend = 0;     // Comando de envío
-        private string toSendCmd;   // String del comando
 
         /**
          * Inicializar cada puerto con su nombre
@@ -112,8 +115,10 @@ namespace COM2Mem
          */
         public MemPort( String portName )
         {
+            string empty_spaces = new String( '\0', TOTAL_SIZE - portName.Length - CMD_PREFIX.Length );
+
             port = new SerialPort( portName );
-            toSendCmd = $"CMD#{portName}\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+            toSendCmd = $"{CMD_PREFIX}{portName}{empty_spaces}";
         }
 
         /**
